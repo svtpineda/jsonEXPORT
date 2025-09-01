@@ -23,75 +23,72 @@
 
 ## Description
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+Este es un proyecto para poder transoformar las facturas en texto plano a JSON
 
-## Project setup
+# Instrucciones
+
+## Requisitos
+- Intalar NodeJS => 22 y <=24
+- Instalar docker y docker-compose
+
+
+## Comandos para levantar el proyecto (Este paso solo se realizan la primera vez que se levante el proyecto)
 
 ```bash
-$ npm install
+
+# Configurar variables de entorno
+$ cp .env.example .env
+
+# modifica las variables a las propias
+
+# Levantar la base de datos con docker
+$ docker-compose up -d
+
+# Instalar dependencias
+$ npm i
 ```
 
-## Compile and run the project
+## Comandos para importar una tabla desde un archivo sql a la base de datos levantada en este proyecto
 
 ```bash
-# development
-$ npm run start
+# Ubicarte donde tienes el archivo y ejecutar, esto copiara el archivo dentro del contenedor de sqlserver, recuerda cambiar en el comando el nombre de el archivo
+$  docker cp .\NobreDelArchivo.sql sqlserver:/tmp/NobreDelArchivo.sql
 
-# watch mode
+# Al ejecutar el siguiente codigo se importara la informacion del archivo a la base de datos que hemos levantado, este paso tomara unos momentos dependiendo de la cantidad de informacion que se este importando
+$  docker exec -it sqlserver sqlcmd -S localhost -U sa -P 'YourStrong@Passw0rd' -C -d master -i /tmp/NobreDelArchivo.sql
+```
+
+## Ejecucion
+
+
+```bash
+# cambiar de la linea 15 del archivo facturas.service.ts el texto "Facturas_5_2025" a la tabla que esta o viene en el archivo que acabamos de importa
+
+
+# En la terminal de visual code ejecutar el siguiente comando para entrar en modo desarrollo
 $ npm run start:dev
 
-# production mode
-$ npm run start:prod
+# En el navegador ir a la url
+http://localhost:3000/generar-json
+
 ```
 
-## Run tests
+
+Si todos los paso se hicieron correctamente, se creara una caprtea uploads que contendra todos los archivos en formato JSON.
+
+## Extras
+
+Si en dado caso la importacion esta fallando en la base de datos ejecutar el siguiente comando
 
 ```bash
-# unit tests
-$ npm run test
-
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
+# Destruimos la base de datos
+$ docker-compose down
+# Levantar la base de datos nuevamente
+$ docker-compose up -d
 ```
 
-## Deployment
+Despues de esto reiniciamos desde el paso de *Comandos para importar*
 
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
-
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
-
-```bash
-$ npm install -g @nestjs/mau
-$ mau deploy
-```
-
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
-
-## Resources
-
-Check out a few resources that may come in handy when working with NestJS:
-
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
-
-## Support
-
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
-
-## Stay in touch
-
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
 
 ## License
 
